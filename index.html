@@ -1,0 +1,411 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>I Love Erikita 🌻✨</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #0d1b2a 100%);
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        .font-love {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Estilos de Pétalos Cayendo */
+        .petal {
+            position: absolute;
+            background: linear-gradient(45deg, #ffd700, #ffae00);
+            border-radius: 15px 0px 15px 0px;
+            pointer-events: none;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(105vh) rotate(360deg) scale(1.2);
+                opacity: 0.2;
+            }
+        }
+
+        /* Brillos mágicos */
+        .sparkle {
+            position: absolute;
+            background: radial-gradient(circle, #fff 10%, rgba(255, 215, 0, 0.8) 50%, transparent 80%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: pulseSparkle 2s infinite ease-in-out alternate;
+        }
+
+        @keyframes pulseSparkle {
+            0% { transform: scale(0.5); opacity: 0.3; }
+            100% { transform: scale(1.4); opacity: 1; }
+        }
+
+        /* Animación de crecimiento de flores */
+        .flower-grow {
+            transform-origin: bottom center;
+            animation: growIn 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.27) forwards;
+        }
+
+        @keyframes growIn {
+            0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* Efecto Neón y Glow */
+        .glow-text {
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 174, 0, 0.4);
+        }
+
+        .card-glass {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        /* Ocultar barra de scroll silenciosamente */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white relative flex flex-col justify-between items-center px-4 py-6 select-none overflow-y-auto">
+
+    <!-- Contenedor para lluvia de pétalos -->
+    <div id="petals-container" class="fixed inset-0 pointer-events-none z-10"></div>
+    
+    <!-- Contenedor para luciérnagas/luces -->
+    <div id="lights-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Cabecera y Título Principal -->
+    <header class="text-center z-20 mt-4">
+        <div class="inline-block px-4 py-1 rounded-full bg-yellow-500/10 border border-yellow-400/30 text-yellow-300 text-xs tracking-widest uppercase mb-2 animate-pulse">
+            Especialmente para ti ✨
+        </div>
+        <h1 class="font-love text-6xl md:text-7xl font-bold text-yellow-300 glow-text tracking-wide my-1">
+            I love Erikita
+        </h1>
+        <p class="text-yellow-100/80 text-sm font-light italic">
+            "Un jardín entero de flores amarillas para iluminar tu día"
+        </p>
+    </header>
+
+    <!-- Jardín de Flores en SVG -->
+    <main class="w-full max-w-md my-auto z-20 flex flex-col items-center">
+        <div id="garden-box" class="relative w-full h-80 flex items-end justify-center">
+            
+            <!-- SVG Dinámico con flores -->
+            <svg id="flower-svg" class="w-full h-full overflow-visible" viewBox="0 0 400 350">
+                <defs>
+                    <!-- Gradientes para pétalos y hojas -->
+                    <radialGradient id="sunflowerCenter" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#3d1e03" />
+                        <stop offset="70%" stop-color="#5c3006" />
+                        <stop offset="100%" stop-color="#261201" />
+                    </radialGradient>
+                    
+                    <linearGradient id="yellowPetal" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fff200" />
+                        <stop offset="100%" stop-color="#ff9900" />
+                    </linearGradient>
+
+                    <linearGradient id="roseYellow" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#ffee55" />
+                        <stop offset="50%" stop-color="#ffcc00" />
+                        <stop offset="100%" stop-color="#ff8800" />
+                    </linearGradient>
+
+                    <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#2d6a4f" />
+                        <stop offset="100%" stop-color="#52b788" />
+                    </linearGradient>
+                </defs>
+
+                <!-- Maceta / Envoltorio de Ramo -->
+                <path d="M 130 330 L 270 330 L 290 240 L 110 240 Z" fill="#d4a373" opacity="0.9" />
+                <path d="M 100 240 L 300 240 L 310 220 L 90 220 Z" fill="#faedcd" />
+                <!-- CINTA DE REGALO -->
+                <path d="M 180 240 Q 200 255 220 240 Q 200 270 180 240" fill="#e63946" />
+                <circle cx="200" cy="245" r="8" fill="#d62828" />
+
+                <!-- FLORES BASE (INICIALES) -->
+                <!-- TALLOS -->
+                <g id="stems">
+                    <path d="M 200 230 Q 190 170 150 120" stroke="url(#stemGrad)" stroke-width="6" fill="none" stroke-linecap="round"/>
+                    <path d="M 200 230 Q 200 160 200 90" stroke="url(#stemGrad)" stroke-width="7" fill="none" stroke-linecap="round"/>
+                    <path d="M 200 230 Q 210 170 250 120" stroke="url(#stemGrad)" stroke-width="6" fill="none" stroke-linecap="round"/>
+                </g>
+
+                <!-- HOJAS -->
+                <g id="leaves">
+                    <path d="M 175 190 Q 140 180 155 160 Q 175 175 175 190 Z" fill="#40916c" />
+                    <path d="M 225 190 Q 260 180 245 160 Q 225 175 225 190 Z" fill="#40916c" />
+                </g>
+
+                <!-- GRUPO DE FLORES DEL RAMO -->
+                <g id="flowers-group">
+                    <!-- Girasol Izquierda -->
+                    <g class="flower-grow" style="transform-origin: 150px 120px;">
+                        <!-- Pétalos -->
+                        <g fill="url(#yellowPetal)">
+                            <ellipse cx="150" cy="100" rx="8" ry="22" />
+                            <ellipse cx="150" cy="140" rx="8" ry="22" />
+                            <ellipse cx="130" cy="120" rx="22" ry="8" />
+                            <ellipse cx="170" cy="120" rx="22" ry="8" />
+                            <ellipse cx="136" cy="106" rx="9" ry="22" transform="rotate(-45 136 106)" />
+                            <ellipse cx="164" cy="134" rx="9" ry="22" transform="rotate(-45 164 134)" />
+                            <ellipse cx="136" cy="134" rx="9" ry="22" transform="rotate(45 136 134)" />
+                            <ellipse cx="164" cy="106" rx="9" ry="22" transform="rotate(45 164 106)" />
+                        </g>
+                        <!-- Centro -->
+                        <circle cx="150" cy="120" r="16" fill="url(#sunflowerCenter)" stroke="#e9c46a" stroke-width="2" />
+                    </g>
+
+                    <!-- Girasol Principal Central -->
+                    <g class="flower-grow" style="animation-delay: 0.2s; transform-origin: 200px 90px;">
+                        <!-- Pétalos -->
+                        <g fill="url(#yellowPetal)">
+                            <ellipse cx="200" cy="65" rx="10" ry="28" />
+                            <ellipse cx="200" cy="115" rx="10" ry="28" />
+                            <ellipse cx="175" cy="90" rx="28" ry="10" />
+                            <ellipse cx="225" cy="90" rx="28" ry="10" />
+                            <ellipse cx="182" cy="72" rx="10" ry="28" transform="rotate(-45 182 72)" />
+                            <ellipse cx="218" cy="108" rx="10" ry="28" transform="rotate(-45 218 108)" />
+                            <ellipse cx="182" cy="108" rx="10" ry="28" transform="rotate(45 182 108)" />
+                            <ellipse cx="218" cy="72" rx="10" ry="28" transform="rotate(45 218 72)" />
+                        </g>
+                        <!-- Centro -->
+                        <circle cx="200" cy="90" r="22" fill="url(#sunflowerCenter)" stroke="#f4a261" stroke-width="2.5" />
+                        <circle cx="200" cy="90" r="18" fill="none" stroke="#261201" stroke-width="1" stroke-dasharray="3,3" />
+                    </g>
+
+                    <!-- Rosa Amarilla Derecha -->
+                    <g class="flower-grow" style="animation-delay: 0.4s; transform-origin: 250px 120px;">
+                        <circle cx="250" cy="120" r="25" fill="url(#roseYellow)" />
+                        <path d="M 235 115 C 240 100, 260 100, 265 115 C 260 130, 240 130, 235 115 Z" fill="#ffaa00" opacity="0.6"/>
+                        <path d="M 240 120 C 245 110, 255 110, 260 120 C 255 128, 245 128, 240 120 Z" fill="#ffee55"/>
+                        <circle cx="250" cy="120" r="6" fill="#ff8800" opacity="0.8"/>
+                    </g>
+                </g>
+            </svg>
+        </div>
+    </main>
+
+    <!-- Modal Nota Romántica -->
+    <div id="note-modal" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-6 hidden transition-all duration-300">
+        <div class="card-glass p-6 rounded-3xl max-w-sm w-full text-center relative border border-yellow-400/40 shadow-2xl transform scale-90 transition-transform duration-300" id="modal-card">
+            <button onclick="closeNote()" class="absolute top-3 right-4 text-yellow-300/70 hover:text-yellow-200 text-2xl font-bold">&times;</button>
+            <div class="text-4xl mb-3" id="note-emoji">🌻</div>
+            <h3 class="font-love text-3xl text-yellow-300 mb-2" id="note-title">Para ti</h3>
+            <p class="text-gray-200 text-sm leading-relaxed mb-5" id="note-text">
+                Eres la luz que ilumina mis días. ¡Te amo muchísimo!
+            </p>
+            <button onclick="closeNote()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-yellow-500 to-amber-600 text-slate-900 font-semibold shadow-lg hover:brightness-110 active:scale-95 transition">
+                Guardar en el corazón ❤️
+            </button>
+        </div>
+    </div>
+
+    <!-- Barra Inferior de Botones Interactivos -->
+    <footer class="w-full max-w-md z-20 pb-2">
+        <div class="card-glass p-3 rounded-2xl flex justify-around items-center gap-2 border border-yellow-500/20 shadow-lg">
+            
+            <!-- Botón 1: Más Flores -->
+            <button onclick="addMoreFlowers()" class="flex-1 flex flex-col items-center justify-center p-2 rounded-xl bg-yellow-500/10 hover:bg-yellow-500/20 active:scale-90 transition border border-yellow-400/30">
+                <span class="text-xl">🌸</span>
+                <span class="text-[10px] text-yellow-200 font-medium mt-1">Más Flores</span>
+            </button>
+
+            <!-- Botón 2: Luces Mágicas -->
+            <button onclick="toggleMagicLights()" class="flex-1 flex flex-col items-center justify-center p-2 rounded-xl bg-yellow-500/10 hover:bg-yellow-500/20 active:scale-90 transition border border-yellow-400/30">
+                <span class="text-xl" id="light-btn-icon">✨</span>
+                <span class="text-[10px] text-yellow-200 font-medium mt-1">Luces</span>
+            </button>
+
+            <!-- Botón 3: Mensaje Romántico -->
+            <button onclick="showRomanticNote()" class="flex-1 flex flex-col items-center justify-center p-2 rounded-xl bg-yellow-500/10 hover:bg-yellow-500/20 active:scale-90 transition border border-yellow-400/30">
+                <span class="text-xl">💌</span>
+                <span class="text-[10px] text-yellow-200 font-medium mt-1">Carta</span>
+            </button>
+            
+            <!-- Botón 4: Sorpresa Confeti -->
+            <button onclick="triggerSurprise()" class="flex-1 flex flex-col items-center justify-center p-2 rounded-xl bg-yellow-500/10 hover:bg-yellow-500/20 active:scale-90 transition border border-yellow-400/30">
+                <span class="text-xl">💛</span>
+                <span class="text-[10px] text-yellow-200 font-medium mt-1">Te Amo</span>
+            </button>
+
+        </div>
+    </footer>
+
+    <script>
+        const petalsContainer = document.getElementById('petals-container');
+        const lightsContainer = document.getElementById('lights-container');
+        let magicLightsActive = false;
+
+        // Crear pétalos flotantes
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            
+            // Tamaño aleatorio
+            const size = Math.random() * 12 + 10;
+            petal.style.width = `${size}px`;
+            petal.style.height = `${size * 1.5}px`;
+            
+            // Posición inicial x
+            petal.style.left = `${Math.random() * 100}vw`;
+            
+            // Duración y retraso de animación
+            const duration = Math.random() * 5 + 5;
+            petal.style.animationDuration = `${duration}s`;
+            
+            petalsContainer.appendChild(petal);
+
+            // Eliminar pétalo tras finalizar animación
+            setTimeout(() => {
+                petal.remove();
+            }, duration * 1000);
+        }
+
+        // Bucle continuo de pétalos
+        setInterval(createPetal, 400);
+
+        const romanticNotes = [
+            { emoji: "🌻", title: "Para mi Erikita", text: "Así como los girasoles buscan siempre el sol, yo siempre busco la luz de tu sonrisa." },
+            { emoji: "🌹", title: "Rosas Amarillas", text: "Las rosas amarillas simbolizan alegría, calidez y el amor puro que siento por ti cada día." },
+            { emoji: "💛", title: "Un detalle especial", text: "No importa dónde esté, mi lugar favorito siempre será a tu lado. ¡I Love Erikita!" },
+            { emoji: "✨", title: "Eres Mágica", text: "Gracias por llenar mi vida de color, risas y momentos inolvidables." }
+        ];
+        let noteIndex = 0;
+
+        function addMoreFlowers() {
+            const svgGroup = document.getElementById('flowers-group');
+            const stemsGroup = document.getElementById('stems');
+            
+            // Posiciones aleatorias alrededor del ramo
+            const randomX = Math.floor(Math.random() * 140) + 130;
+            const randomY = Math.floor(Math.random() * 80) + 80;
+            const scale = (Math.random() * 0.4 + 0.6).toFixed(2);
+
+            // Crear nuevo tallo
+            const newStem = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            newStem.setAttribute("d", `M 200 230 Q ${(200 + randomX)/2} 180 ${randomX} ${randomY + 20}`);
+            newStem.setAttribute("stroke", "url(#stemGrad)");
+            newStem.setAttribute("stroke-width", "5");
+            newStem.setAttribute("fill", "none");
+            stemsGroup.appendChild(newStem);
+
+            // Crear flor (Girasol pequeño)
+            const newFlower = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            newFlower.classList.add("flower-grow");
+            newFlower.style.transformOrigin = `${randomX}px ${randomY}px`;
+            
+            newFlower.innerHTML = `
+                <g fill="url(#yellowPetal)">
+                    <ellipse cx="${randomX}" cy="${randomY - 15}" rx="5" ry="15" />
+                    <ellipse cx="${randomX}" cy="${randomY + 15}" rx="5" ry="15" />
+                    <ellipse cx="${randomX - 15}" cy="${randomY}" rx="15" ry="5" />
+                    <ellipse cx="${randomX + 15}" cy="${randomY}" rx="15" ry="5" />
+                </g>
+                <circle cx="${randomX}" cy="${randomY}" r="10" fill="url(#sunflowerCenter)" stroke="#f4a261" stroke-width="1.5" />
+            `;
+            
+            svgGroup.appendChild(newFlower);
+
+            // Lanzar pequeños destellos al florecer
+            confetti({
+                particleCount: 15,
+                spread: 40,
+                origin: { y: 0.6 },
+                colors: ['#ffd700', '#ffae00', '#ffffff']
+            });
+        }
+
+        function toggleMagicLights() {
+            magicLightsActive = !magicLightsActive;
+            const icon = document.getElementById('light-btn-icon');
+            
+            if (magicLightsActive) {
+                icon.innerText = "🌟";
+                // Generar varias luciérnagas
+                for (let i = 0; i < 25; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.classList.add('sparkle');
+                    const size = Math.random() * 8 + 4;
+                    sparkle.style.width = `${size}px`;
+                    sparkle.style.height = `${size}px`;
+                    sparkle.style.top = `${Math.random() * 90}vh`;
+                    sparkle.style.left = `${Math.random() * 90}vw`;
+                    sparkle.style.animationDelay = `${Math.random() * 2}s`;
+                    sparkle.dataset.magic = "true";
+                    lightsContainer.appendChild(sparkle);
+                }
+            } else {
+                icon.innerText = "✨";
+                // Eliminar luciérnagas
+                const sparkles = document.querySelectorAll('[data-magic="true"]');
+                sparkles.forEach(el => el.remove());
+            }
+        }
+
+        function showRomanticNote() {
+            const modal = document.getElementById('note-modal');
+            const modalCard = document.getElementById('modal-card');
+            const note = romanticNotes[noteIndex];
+
+            document.getElementById('note-emoji').innerText = note.emoji;
+            document.getElementById('note-title').innerText = note.title;
+            document.getElementById('note-text').innerText = note.text;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modalCard.classList.remove('scale-90');
+                modalCard.classList.add('scale-100');
+            }, 10);
+
+            // Rotar a la siguiente nota para la próxima vez
+            noteIndex = (noteIndex + 1) % romanticNotes.length;
+        }
+
+        function closeNote() {
+            const modal = document.getElementById('note-modal');
+            const modalCard = document.getElementById('modal-card');
+            
+            modalCard.classList.remove('scale-100');
+            modalCard.classList.add('scale-90');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        function triggerSurprise() {
+            // Explosión de confeti dorado y corazones
+            confetti({
+                particleCount: 80,
+                spread: 70,
+                origin: { y: 0.7 },
+                colors: ['#ffd700', '#ffae00', '#e63946', '#ffffff']
+            });
+
+            // Animación temporal en el texto principal
+            const title = document.querySelector('h1');
+            title.classList.add('scale-110');
+            setTimeout(() => title.classList.remove('scale-110'), 300);
+  
